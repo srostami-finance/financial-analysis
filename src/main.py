@@ -1,122 +1,84 @@
-# src/main.py
 import pandas as pd
 
-# ================================
-# Stage 0: Load initial data
-# ================================
-def load_data():
-    # داده‌های تستی برای سه شرکت
-    df = pd.DataFrame({
-        'Company': ['A', 'B', 'C'],
-        'CurrentAssets': [100000, 150000, 120000],
-        'CurrentLiabilities': [50000, 70000, 60000],
-        'Inventory': [20000, 30000, 25000],
-        'Cash': [30000, 40000, 35000],
-        'TotalLiabilities': [80000, 100000, 90000],
-        'Equity': [70000, 120000, 90000],
-        'NetIncome': [10000, 20000, 15000],
-        'Revenue': [50000, 70000, 60000],
-        'NOPAT': [8000, 15000, 12000]
-    })
-    print("Initial data loaded:\n", df, "\n")
+def load_data(file_path):
+    df = pd.read_excel(file_path)
+    print("Initial data loaded:\n", df)
     return df
 
-# ================================
 # Stage 1-3: Liquidity Ratios
-# ================================
 def current_ratio(df):
     df['Current_Ratio'] = df['CurrentAssets'] / df['CurrentLiabilities']
-    print("After Current Ratio:\n", df[['Company','Current_Ratio']], "\n")
+    print("\nAfter Current Ratio:\n", df[['Company', 'Current_Ratio']])
     return df
 
 def quick_ratio(df):
     df['Quick_Ratio'] = (df['CurrentAssets'] - df['Inventory']) / df['CurrentLiabilities']
-    print("After Quick Ratio:\n", df[['Company','Quick_Ratio']], "\n")
+    print("\nAfter Quick Ratio:\n", df[['Company', 'Quick_Ratio']])
     return df
 
 def cash_ratio(df):
     df['Cash_Ratio'] = df['Cash'] / df['CurrentLiabilities']
-    print("After Cash Ratio:\n", df[['Company','Cash_Ratio']], "\n")
+    print("\nAfter Cash Ratio:\n", df[['Company', 'Cash_Ratio']])
     return df
 
-# ================================
 # Stage 4-6: Leverage Ratios
-# ================================
+def add_sample_leverage_data(df):
+    # اضافه کردن ستون‌های لازم برای وام، حقوق صاحبان سهام و مالیات
+    df['Equity'] = [80000, 100000, 90000]
+    df['TotalLiabilities'] = [50000, 70000, 60000]
+    df['DebtRate'] = [0.05, 0.06, 0.055]   # نرخ بهره بدهی
+    df['TaxRate'] = [0.25, 0.27, 0.26]     # نرخ مالیات
+    df['FCF'] = [10000, 15000, 12000]      # جریان نقدی آزاد
+    return df
+
 def debt_to_equity_ratio(df):
     df['Debt_to_Equity'] = df['TotalLiabilities'] / df['Equity']
-    print("After Debt to Equity Ratio:\n", df[['Company','Debt_to_Equity']], "\n")
+    print("\nAfter Debt to Equity Ratio:\n", df[['Company', 'Debt_to_Equity']])
     return df
 
 def debt_ratio(df):
-    df['Debt_Ratio'] = df['TotalLiabilities'] / (df['TotalLiabilities'] + df['Equity'])
-    print("After Debt Ratio:\n", df[['Company','Debt_Ratio']], "\n")
+    df['Debt_Ratio'] = df['TotalLiabilities'] / (df['Equity'] + df['TotalLiabilities'])
+    print("\nAfter Debt Ratio:\n", df[['Company', 'Debt_Ratio']])
     return df
 
-# ================================
-# Stage 7-8: Profitability Ratios
-# ================================
-def roe(df):
-    df['ROE'] = df['NetIncome'] / df['Equity']
-    print("After ROE:\n", df[['Company','ROE']], "\n")
-    return df
-
-def roa(df):
-    df['ROA'] = df['NetIncome'] / (df['TotalLiabilities'] + df['Equity'])
-    print("After ROA:\n", df[['Company','ROA']], "\n")
-    return df
-
-# ================================
-# Stage 9-10: Efficiency Ratios
-# ================================
-def net_profit_margin(df):
-    df['Net_Profit_Margin'] = df['NetIncome'] / df['Revenue']
-    print("After Net Profit Margin:\n", df[['Company','Net_Profit_Margin']], "\n")
-    return df
-
-def return_on_capital(df):
-    df['ROIC'] = df['NOPAT'] / (df['TotalLiabilities'] + df['Equity'])
-    print("After ROIC:\n", df[['Company','ROIC']], "\n")
-    return df
-
-# ================================
 # Stage 11: WACC
-# ================================
-def wacc(df, equity_cost=0.12, debt_cost=0.06, tax_rate=0.25):
-    # WACC = E/V * Re + D/V * Rd * (1 - Tc)
-    df['Total_Capital'] = df['TotalLiabilities'] + df['Equity']
-    df['WACC'] = (df['Equity']/df['Total_Capital'])*equity_cost + \
-                 (df['TotalLiabilities']/df['Total_Capital'])*debt_cost*(1-tax_rate)
-    print("After WACC:\n", df[['Company','WACC']], "\n")
+def calculate_wacc(df):
+    df['V'] = df['Equity'] + df['TotalLiabilities']
+    df['E/V'] = df['Equity'] / df['V']
+    df['D/V'] = df['TotalLiabilities'] / df['V']
+    df['WACC'] = df['E/V'] * 0.10 + df['D/V'] * df['DebtRate'] * (1 - df['TaxRate'])  # 0.10 = فرضی نرخ بازده حقوق صاحبان سهام
+    print("\nAfter WACC Calculation:\n", df[['Company', 'WACC']])
     return df
 
-# ================================
-# Main function
-# ================================
-def main():
-    df = load_data()
+# Stage 12: DCF Valuation
+def dcf_valuation(df):
+    df['DCF_Value'] = df['FCF'] / df['WACC']
+    print("\nAfter DCF Valuation:\n", df[['Company', 'DCF_Value']])
+    return df
 
-    # Liquidity
+def main():
+    input_file = '../data/raw/financial_data.xlsx'
+    df = load_data(input_file)
+
+    # مرحله 1-3
     df = current_ratio(df)
     df = quick_ratio(df)
     df = cash_ratio(df)
 
-    # Leverage
+    # مرحله 4-6: اضافه کردن داده‌های نمونه و محاسبه نسبت‌های بدهی
+    df = add_sample_leverage_data(df)
     df = debt_to_equity_ratio(df)
     df = debt_ratio(df)
 
-    # Profitability
-    df = roe(df)
-    df = roa(df)
+    # مرحله 11: WACC
+    df = calculate_wacc(df)
 
-    # Efficiency
-    df = net_profit_margin(df)
-    df = return_on_capital(df)
+    # مرحله 12: DCF
+    df = dcf_valuation(df)
 
-    # WACC
-    df = wacc(df)
-
-    # Final
-    print("Final DataFrame with all ratios:\n", df)
+    # ذخیره نهایی
+    df.to_excel('../data/processed/financial_ratios.xlsx', index=False)
+    print("\nFinal Data Saved to processed/financial_ratios.xlsx")
 
 if __name__ == "__main__":
     main()
