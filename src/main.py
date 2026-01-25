@@ -1,95 +1,124 @@
 import pandas as pd
-import os
 
-# --- مرحله 0: فایل دیتا ---
-input_file = '../data/raw/financial_data.xlsx'
 
-# --- مرحله 1: بارگذاری داده‌ها ---
-def load_data(file_path):
-    if os.path.exists(file_path):
-        df = pd.read_excel(file_path)
-    else:
-        # داده تستی اگه فایل نباشه
-        df = pd.DataFrame({
-            'Company': ['A', 'B', 'C'],
-            'CurrentAssets': [100000, 150000, 120000],
-            'CurrentLiabilities': [50000, 70000, 60000],
-            'Inventory': [20000, 30000, 25000],
-            'Cash': [30000, 40000, 35000],
-        })
+# ---------- Stage 1: Load Data ----------
+def load_data():
+    data = {
+        "Company": ["A", "B", "C"],
+
+        # Liquidity
+        "CurrentAssets": [100000, 150000, 120000],
+        "CurrentLiabilities": [50000, 70000, 60000],
+        "Inventory": [20000, 30000, 25000],
+        "Cash": [30000, 40000, 35000],
+
+        # Leverage
+        "TotalLiabilities": [80000, 110000, 90000],
+        "Equity": [120000, 140000, 130000],
+
+        # Activity
+        "Sales": [200000, 280000, 240000],
+        "COGS": [120000, 170000, 150000],
+        "AccountsReceivable": [30000, 40000, 35000],
+        "AccountsPayable": [25000, 35000, 30000],
+        "TotalAssets": [200000, 250000, 220000],
+    }
+
+    df = pd.DataFrame(data)
+    print("Initial data loaded:")
+    print(df)
     return df
 
-# --- مرحله 2: نسبت‌های نقدینگی ---
+
+# ---------- Stage 2: Liquidity Ratios ----------
 def current_ratio(df):
-    df['Current_Ratio'] = df['CurrentAssets'] / df['CurrentLiabilities']
-    print("\nAfter Current Ratio:\n", df[['Company', 'Current_Ratio']])
+    df["Current_Ratio"] = df["CurrentAssets"] / df["CurrentLiabilities"]
+    print("\nAfter Current Ratio:")
+    print(df[["Company", "Current_Ratio"]])
     return df
+
 
 def quick_ratio(df):
-    df['Quick_Ratio'] = (df['CurrentAssets'] - df['Inventory']) / df['CurrentLiabilities']
-    print("\nAfter Quick Ratio:\n", df[['Company', 'Quick_Ratio']])
+    df["Quick_Ratio"] = (df["CurrentAssets"] - df["Inventory"]) / df["CurrentLiabilities"]
+    print("\nAfter Quick Ratio:")
+    print(df[["Company", "Quick_Ratio"]])
     return df
+
 
 def cash_ratio(df):
-    df['Cash_Ratio'] = df['Cash'] / df['CurrentLiabilities']
-    print("\nAfter Cash Ratio:\n", df[['Company', 'Cash_Ratio']])
+    df["Cash_Ratio"] = df["Cash"] / df["CurrentLiabilities"]
+    print("\nAfter Cash Ratio:")
+    print(df[["Company", "Cash_Ratio"]])
     return df
 
-# --- مرحله 3 و 4: اضافه کردن ستون‌های بدهی و سودآوری ---
-def add_missing_columns(df):
-    if 'TotalLiabilities' not in df.columns:
-        df['TotalLiabilities'] = [120000, 140000, 130000]
-    if 'Equity' not in df.columns:
-        df['Equity'] = [80000, 90000, 70000]
-    if 'TotalAssets' not in df.columns:
-        df['TotalAssets'] = [200000, 230000, 200000]
-    if 'Revenue' not in df.columns:
-        df['Revenue'] = [150000, 180000, 160000]
-    if 'NetIncome' not in df.columns:
-        df['NetIncome'] = [20000, 25000, 22000]
-    return df
 
-# --- مرحله 5: نسبت‌های بدهی ---
+# ---------- Stage 3 & 4: Leverage Ratios ----------
 def debt_to_equity_ratio(df):
-    df['Debt_to_Equity'] = df['TotalLiabilities'] / df['Equity']
-    print("\nAfter Debt to Equity Ratio:\n", df[['Company', 'Debt_to_Equity']])
+    df["Debt_to_Equity"] = df["TotalLiabilities"] / df["Equity"]
+    print("\nAfter Debt to Equity Ratio:")
+    print(df[["Company", "Debt_to_Equity"]])
     return df
+
 
 def debt_ratio(df):
-    df['Debt_Ratio'] = df['TotalLiabilities'] / df['TotalAssets']
-    print("\nAfter Debt Ratio:\n", df[['Company', 'Debt_Ratio']])
+    df["Debt_Ratio"] = df["TotalLiabilities"] / df["TotalAssets"]
+    print("\nAfter Debt Ratio:")
+    print(df[["Company", "Debt_Ratio"]])
     return df
 
-# --- مرحله 6: نسبت‌های سودآوری ---
-def return_on_assets(df):
-    df['ROA'] = df['NetIncome'] / df['TotalAssets']
-    print("\nAfter Return on Assets (ROA):\n", df[['Company', 'ROA']])
+
+# ---------- Stage 7: Activity Ratios ----------
+def inventory_turnover(df):
+    df["Inventory_Turnover"] = df["COGS"] / df["Inventory"]
+    print("\nAfter Inventory Turnover:")
+    print(df[["Company", "Inventory_Turnover"]])
     return df
 
-def return_on_equity(df):
-    df['ROE'] = df['NetIncome'] / df['Equity']
-    print("\nAfter Return on Equity (ROE):\n", df[['Company', 'ROE']])
+
+def receivables_turnover(df):
+    df["Receivables_Turnover"] = df["Sales"] / df["AccountsReceivable"]
+    print("\nAfter Receivables Turnover:")
+    print(df[["Company", "Receivables_Turnover"]])
     return df
 
-# --- تابع اصلی ---
+
+def payables_turnover(df):
+    df["Payables_Turnover"] = df["COGS"] / df["AccountsPayable"]
+    print("\nAfter Payables Turnover:")
+    print(df[["Company", "Payables_Turnover"]])
+    return df
+
+
+def total_asset_turnover(df):
+    df["Total_Asset_Turnover"] = df["Sales"] / df["TotalAssets"]
+    print("\nAfter Total Asset Turnover:")
+    print(df[["Company", "Total_Asset_Turnover"]])
+    return df
+
+
+# ---------- Main ----------
 def main():
-    df = load_data(input_file)
-    print("Initial data loaded:\n", df)
+    df = load_data()
 
-    df = add_missing_columns(df)
-
+    # Liquidity
     df = current_ratio(df)
     df = quick_ratio(df)
     df = cash_ratio(df)
 
+    # Leverage
     df = debt_to_equity_ratio(df)
     df = debt_ratio(df)
 
-    df = return_on_assets(df)
-    df = return_on_equity(df)
+    # Activity
+    df = inventory_turnover(df)
+    df = receivables_turnover(df)
+    df = payables_turnover(df)
+    df = total_asset_turnover(df)
 
-    # خروجی نهایی
-    print("\nFinal DataFrame with all ratios:\n", df)
+    print("\nFinal DataFrame:")
+    print(df)
+
 
 if __name__ == "__main__":
     main()
+
