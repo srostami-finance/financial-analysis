@@ -1,142 +1,106 @@
 import pandas as pd
 
 
-# ---------- Stage 1: Load Data ----------
 def load_data():
     data = {
         "Company": ["A", "B", "C"],
-
-        # Liquidity
         "CurrentAssets": [100000, 150000, 120000],
         "CurrentLiabilities": [50000, 70000, 60000],
         "Inventory": [20000, 30000, 25000],
         "Cash": [30000, 40000, 35000],
-
-        # Leverage
-        "TotalLiabilities": [80000, 110000, 90000],
-        "Equity": [120000, 140000, 130000],
-        "TotalAssets": [200000, 250000, 220000],
-
-        # Activity
-        "Sales": [200000, 280000, 240000],
-        "COGS": [120000, 170000, 150000],
-        "AccountsReceivable": [30000, 40000, 35000],
-        "AccountsPayable": [25000, 35000, 30000],
-
-        # Profitability
-        "NetIncome": [25000, 38000, 30000],
-        "OperatingIncome": [40000, 55000, 48000],
+        "TotalAssets": [300000, 400000, 350000],
+        "TotalLiabilities": [180000, 250000, 220000],
+        "Equity": [120000, 150000, 130000],
+        "Sales": [500000, 650000, 600000],
+        "COGS": [300000, 380000, 360000],
+        "OperatingIncome": [120000, 160000, 140000],
+        "NetIncome": [80000, 110000, 95000],
+        "SharesOutstanding": [10000, 15000, 12000],
+        "MarketPrice": [25, 30, 28],
     }
-
-    df = pd.DataFrame(data)
-    print("Initial data loaded:")
-    print(df)
-    return df
+    return pd.DataFrame(data)
 
 
-# ---------- Stage 2: Liquidity Ratios ----------
+# ---------- Stage 2–4: Liquidity ----------
 def current_ratio(df):
     df["Current_Ratio"] = df["CurrentAssets"] / df["CurrentLiabilities"]
-    print("\nAfter Current Ratio:")
-    print(df[["Company", "Current_Ratio"]])
     return df
 
 
 def quick_ratio(df):
     df["Quick_Ratio"] = (df["CurrentAssets"] - df["Inventory"]) / df["CurrentLiabilities"]
-    print("\nAfter Quick Ratio:")
-    print(df[["Company", "Quick_Ratio"]])
     return df
 
 
 def cash_ratio(df):
     df["Cash_Ratio"] = df["Cash"] / df["CurrentLiabilities"]
-    print("\nAfter Cash Ratio:")
-    print(df[["Company", "Cash_Ratio"]])
     return df
 
 
-# ---------- Stage 3 & 4: Leverage Ratios ----------
+# ---------- Stage 5–6: Leverage ----------
 def debt_to_equity_ratio(df):
     df["Debt_to_Equity"] = df["TotalLiabilities"] / df["Equity"]
-    print("\nAfter Debt to Equity Ratio:")
-    print(df[["Company", "Debt_to_Equity"]])
     return df
 
 
 def debt_ratio(df):
     df["Debt_Ratio"] = df["TotalLiabilities"] / df["TotalAssets"]
-    print("\nAfter Debt Ratio:")
-    print(df[["Company", "Debt_Ratio"]])
     return df
 
 
-# ---------- Stage 7: Activity Ratios ----------
+# ---------- Stage 7: Activity ----------
 def inventory_turnover(df):
     df["Inventory_Turnover"] = df["COGS"] / df["Inventory"]
-    print("\nAfter Inventory Turnover:")
-    print(df[["Company", "Inventory_Turnover"]])
-    return df
-
-
-def receivables_turnover(df):
-    df["Receivables_Turnover"] = df["Sales"] / df["AccountsReceivable"]
-    print("\nAfter Receivables Turnover:")
-    print(df[["Company", "Receivables_Turnover"]])
-    return df
-
-
-def payables_turnover(df):
-    df["Payables_Turnover"] = df["COGS"] / df["AccountsPayable"]
-    print("\nAfter Payables Turnover:")
-    print(df[["Company", "Payables_Turnover"]])
     return df
 
 
 def total_asset_turnover(df):
     df["Total_Asset_Turnover"] = df["Sales"] / df["TotalAssets"]
-    print("\nAfter Total Asset Turnover:")
-    print(df[["Company", "Total_Asset_Turnover"]])
     return df
 
 
-# ---------- Stage 8: Profitability Ratios ----------
+# ---------- Stage 8: Profitability ----------
 def gross_profit_margin(df):
     df["Gross_Profit_Margin"] = (df["Sales"] - df["COGS"]) / df["Sales"]
-    print("\nAfter Gross Profit Margin:")
-    print(df[["Company", "Gross_Profit_Margin"]])
-    return df
-
-
-def operating_profit_margin(df):
-    df["Operating_Profit_Margin"] = df["OperatingIncome"] / df["Sales"]
-    print("\nAfter Operating Profit Margin:")
-    print(df[["Company", "Operating_Profit_Margin"]])
     return df
 
 
 def net_profit_margin(df):
     df["Net_Profit_Margin"] = df["NetIncome"] / df["Sales"]
-    print("\nAfter Net Profit Margin:")
-    print(df[["Company", "Net_Profit_Margin"]])
     return df
 
 
-def return_on_assets(df):
+def roa(df):
     df["ROA"] = df["NetIncome"] / df["TotalAssets"]
-    print("\nAfter ROA:")
-    print(df[["Company", "ROA"]])
     return df
 
 
-def return_on_equity(df):
+def roe(df):
     df["ROE"] = df["NetIncome"] / df["Equity"]
-    print("\nAfter ROE:")
-    print(df[["Company", "ROE"]])
     return df
 
 
-# ---------- Main ----------
+# ---------- Stage 9: Market Ratios (FINAL) ----------
+def eps(df):
+    df["EPS"] = df["NetIncome"] / df["SharesOutstanding"]
+    return df
+
+
+def pe_ratio(df):
+    df["P_E_Ratio"] = df["MarketPrice"] / df["EPS"]
+    return df
+
+
+def bvps(df):
+    df["BVPS"] = df["Equity"] / df["SharesOutstanding"]
+    return df
+
+
+def pb_ratio(df):
+    df["P_B_Ratio"] = df["MarketPrice"] / df["BVPS"]
+    return df
+
+
 def main():
     df = load_data()
 
@@ -151,19 +115,27 @@ def main():
 
     # Activity
     df = inventory_turnover(df)
-    df = receivables_turnover(df)
-    df = payables_turnover(df)
     df = total_asset_turnover(df)
 
     # Profitability
     df = gross_profit_margin(df)
-    df = operating_profit_margin(df)
     df = net_profit_margin(df)
-    df = return_on_assets(df)
-    df = return_on_equity(df)
+    df = roa(df)
+    df = roe(df)
 
-    print("\nFinal DataFrame:")
-    print(df)
+    # Market (FINAL)
+    df = eps(df)
+    df = pe_ratio(df)
+    df = bvps(df)
+    df = pb_ratio(df)
+
+    print(df[[
+        "Company",
+        "EPS",
+        "P_E_Ratio",
+        "BVPS",
+        "P_B_Ratio"
+    ]])
 
 
 if __name__ == "__main__":
