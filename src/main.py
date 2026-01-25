@@ -1,30 +1,122 @@
-import numpy as np
+# src/main.py
+import pandas as pd
 
-def capm_expected_return(stock_returns, market_returns, risk_free_rate):
-    """
-    محاسبه Beta و بازده مورد انتظار سهم بر اساس مدل CAPM
-    """
-    beta = np.cov(stock_returns, market_returns)[0, 1] / np.var(market_returns)
-    expected_return = risk_free_rate + beta * (market_returns.mean() - risk_free_rate)
-    return beta, expected_return
+# ================================
+# Stage 0: Load initial data
+# ================================
+def load_data():
+    # داده‌های تستی برای سه شرکت
+    df = pd.DataFrame({
+        'Company': ['A', 'B', 'C'],
+        'CurrentAssets': [100000, 150000, 120000],
+        'CurrentLiabilities': [50000, 70000, 60000],
+        'Inventory': [20000, 30000, 25000],
+        'Cash': [30000, 40000, 35000],
+        'TotalLiabilities': [80000, 100000, 90000],
+        'Equity': [70000, 120000, 90000],
+        'NetIncome': [10000, 20000, 15000],
+        'Revenue': [50000, 70000, 60000],
+        'NOPAT': [8000, 15000, 12000]
+    })
+    print("Initial data loaded:\n", df, "\n")
+    return df
 
+# ================================
+# Stage 1-3: Liquidity Ratios
+# ================================
+def current_ratio(df):
+    df['Current_Ratio'] = df['CurrentAssets'] / df['CurrentLiabilities']
+    print("After Current Ratio:\n", df[['Company','Current_Ratio']], "\n")
+    return df
+
+def quick_ratio(df):
+    df['Quick_Ratio'] = (df['CurrentAssets'] - df['Inventory']) / df['CurrentLiabilities']
+    print("After Quick Ratio:\n", df[['Company','Quick_Ratio']], "\n")
+    return df
+
+def cash_ratio(df):
+    df['Cash_Ratio'] = df['Cash'] / df['CurrentLiabilities']
+    print("After Cash Ratio:\n", df[['Company','Cash_Ratio']], "\n")
+    return df
+
+# ================================
+# Stage 4-6: Leverage Ratios
+# ================================
+def debt_to_equity_ratio(df):
+    df['Debt_to_Equity'] = df['TotalLiabilities'] / df['Equity']
+    print("After Debt to Equity Ratio:\n", df[['Company','Debt_to_Equity']], "\n")
+    return df
+
+def debt_ratio(df):
+    df['Debt_Ratio'] = df['TotalLiabilities'] / (df['TotalLiabilities'] + df['Equity'])
+    print("After Debt Ratio:\n", df[['Company','Debt_Ratio']], "\n")
+    return df
+
+# ================================
+# Stage 7-8: Profitability Ratios
+# ================================
+def roe(df):
+    df['ROE'] = df['NetIncome'] / df['Equity']
+    print("After ROE:\n", df[['Company','ROE']], "\n")
+    return df
+
+def roa(df):
+    df['ROA'] = df['NetIncome'] / (df['TotalLiabilities'] + df['Equity'])
+    print("After ROA:\n", df[['Company','ROA']], "\n")
+    return df
+
+# ================================
+# Stage 9-10: Efficiency Ratios
+# ================================
+def net_profit_margin(df):
+    df['Net_Profit_Margin'] = df['NetIncome'] / df['Revenue']
+    print("After Net Profit Margin:\n", df[['Company','Net_Profit_Margin']], "\n")
+    return df
+
+def return_on_capital(df):
+    df['ROIC'] = df['NOPAT'] / (df['TotalLiabilities'] + df['Equity'])
+    print("After ROIC:\n", df[['Company','ROIC']], "\n")
+    return df
+
+# ================================
+# Stage 11: WACC
+# ================================
+def wacc(df, equity_cost=0.12, debt_cost=0.06, tax_rate=0.25):
+    # WACC = E/V * Re + D/V * Rd * (1 - Tc)
+    df['Total_Capital'] = df['TotalLiabilities'] + df['Equity']
+    df['WACC'] = (df['Equity']/df['Total_Capital'])*equity_cost + \
+                 (df['TotalLiabilities']/df['Total_Capital'])*debt_cost*(1-tax_rate)
+    print("After WACC:\n", df[['Company','WACC']], "\n")
+    return df
+
+# ================================
+# Main function
+# ================================
 def main():
-    # داده نمونه: بازده سهم و بازار
-    stock_returns = np.array([0.02, 0.03, -0.01, 0.04, 0.01])
-    market_returns = np.array([0.015, 0.025, -0.005, 0.03, 0.01])
-    risk_free_rate = 0.01
+    df = load_data()
 
-    # محاسبه Beta و بازده مورد انتظار
-    beta, expected_return = capm_expected_return(
-        stock_returns,
-        market_returns,
-        risk_free_rate
-    )
+    # Liquidity
+    df = current_ratio(df)
+    df = quick_ratio(df)
+    df = cash_ratio(df)
 
-    # نمایش نتایج
-    print("CAPM Results:")
-    print("Beta:", round(beta, 3))
-    print("Expected Return:", round(expected_return, 3))
+    # Leverage
+    df = debt_to_equity_ratio(df)
+    df = debt_ratio(df)
+
+    # Profitability
+    df = roe(df)
+    df = roa(df)
+
+    # Efficiency
+    df = net_profit_margin(df)
+    df = return_on_capital(df)
+
+    # WACC
+    df = wacc(df)
+
+    # Final
+    print("Final DataFrame with all ratios:\n", df)
 
 if __name__ == "__main__":
     main()
