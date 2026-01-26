@@ -20,4 +20,22 @@ data/processed/
 
 # Notebooks outputs
 *.ipynb
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+
+# Data
+data/raw/
+data/processed/
 
