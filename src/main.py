@@ -13,17 +13,18 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 import statsmodels.api as sm
 
+# -------------------
+# Custom Modules
+# -------------------
 from financial_ratios import calculate_all_financial_ratios
-
+from market_ratios import add_market_ratios  # Phase 6: Market/Valuation Ratios
 
 # -------------------
 # Paths
 # -------------------
 input_file = "../data/financial_data.xlsx"
 output_file = "../outputs/financial_analysis_results.xlsx"
-
 os.makedirs(os.path.dirname(output_file), exist_ok=True)
-
 
 # -------------------
 # Load Data
@@ -33,6 +34,7 @@ def load_data(file_path):
         df = pd.read_excel(file_path)
         print("Data loaded from file.")
     else:
+        # Sample data if file not found
         df = pd.DataFrame({
             'Company': ['A', 'B', 'C'],
             'CurrentAssets': [100000, 150000, 120000],
@@ -56,11 +58,18 @@ def load_data(file_path):
             'SMB': [0.02, 0.02, 0.02],
             'HML': [0.01, 0.01, 0.01],
             'Z_Score': [3.0, 2.2, 2.8],
-            'Distress': [0, 1, 0]
+            'Distress': [0, 1, 0],
+            # Market/Phase6 data
+            'MarketPrice': [50, 70, 60],
+            'EPS': [5, 7, 6],
+            'BookValuePerShare': [40, 60, 50],
+            'MarketCap': [500000, 700000, 600000],
+            'EBITDA': [35000, 42000, 38000],
+            'DividendPerShare': [1.5, 2, 1.8],
+            'SharesOutstanding': [10000, 10000, 10000]
         })
         print("Sample data created.")
     return df
-
 
 # -------------------
 # CAPM
@@ -69,7 +78,6 @@ def capm_expected_return(df, risk_free=0.03, market_return=0.10):
     if 'Beta' in df.columns:
         df['Expected_Return'] = risk_free + df['Beta'] * (market_return - risk_free)
     return df
-
 
 # -------------------
 # WACC
@@ -80,24 +88,19 @@ def calculate_wacc(df):
         df['V'] = df['Equity'] + df['TotalLiabilities']
         df['E_V'] = df['Equity'] / df['V']
         df['D_V'] = df['TotalLiabilities'] / df['V']
-        df['WACC'] = (
-            df['E_V'] * df['Expected_Return']
-            + df['D_V'] * df['CostOfDebt'] * (1 - df['TaxRate'])
-        )
+        df['WACC'] = df['E_V'] * df['Expected_Return'] + df['D_V'] * df['CostOfDebt'] * (1 - df['TaxRate'])
     return df
 
-
 # -------------------
-# DCF
+# DCF Valuation
 # -------------------
 def dcf_valuation(df):
     if all(col in df.columns for col in ['FCF', 'WACC']):
         df['DCF_Value'] = df['FCF'] / df['WACC']
     return df
 
-
 # -------------------
-# Fama-French
+# Fama-French Regression
 # -------------------
 def fama_french_regression(df):
     required = ['Excess_Return', 'Market_Excess', 'SMB', 'HML']
@@ -112,7 +115,6 @@ def fama_french_regression(df):
         df['Beta_HML'] = model.params.get('HML', np.nan)
     return df
 
-
 # -------------------
 # Financial Distress ML
 # -------------------
@@ -125,11 +127,10 @@ def ml_financial_distress(df):
             logreg.fit(X, y)
             df['Distress_LogReg_Pred'] = logreg.predict(X)
 
-            nn = MLPClassifier(hidden_layer_sizes=(5, 5), max_iter=500)
+            nn = MLPClassifier(hidden_layer_sizes=(5,5), max_iter=500)
             nn.fit(X, y)
             df['Distress_NN_Pred'] = nn.predict(X)
     return df
-
 
 # -------------------
 # Save Results & Charts
@@ -144,7 +145,7 @@ def save_results_with_charts(df):
     numeric_cols = df.select_dtypes(include=[np.number]).columns
 
     for i, col in enumerate(numeric_cols):
-        plt.figure(figsize=(6, 4))
+        plt.figure(figsize=(6,4))
         sns.barplot(x='Company', y=col, data=df)
         plt.title(col)
         buf = BytesIO()
@@ -152,11 +153,10 @@ def save_results_with_charts(df):
         plt.close()
         buf.seek(0)
         img = Image(buf)
-        ws.add_image(img, f"A{1 + i * 15}")
+        ws.add_image(img, f"A{1 + i*15}")
 
     wb.save(output_file)
     print(f"Final processed data and charts saved to {output_file}")
-
 
 # -------------------
 # Main Pipeline
@@ -166,6 +166,9 @@ def main():
 
     # Phase 1: Financial Ratios
     df = calculate_all_financial_ratios(df)
+
+    # Phase 6: Market Ratios
+    df = add_market_ratios(df)
 
     # Phase 2: Valuation
     df = capm_expected_return(df)
@@ -178,10 +181,5 @@ def main():
 
     save_results_with_charts(df)
 
-
 if __name__ == "__main__":
     main()
-
-
-
-
