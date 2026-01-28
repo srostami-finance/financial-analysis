@@ -9,6 +9,7 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
 from data_quality import data_quality_checks
+from textual_report import generate_textual_report
 
 
 from sklearn.linear_model import LogisticRegression
@@ -205,6 +206,7 @@ def main():
     df = ml_financial_distress(df)
 
     save_results_with_charts(df)
+    generate_textual_report(df)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,102 @@
+FINANCIAL ANALYSIS REPORT
+============================================================
+Generated on: 2026-01-28 16:44
+
+------------------------------------------------------------
+Company: A
+------------------------------------------------------------
+Liquidity Position:
+- The current ratio is 2.0, indicating the firm's ability to meet short-term obligations.
+- The quick ratio of 1.6 reflects liquidity excluding inventories.
+- The cash ratio stands at 0.6, representing the most conservative liquidity measure.
+
+Profitability Analysis:
+- Return on Assets (ROA) equals 0.11, indicating efficiency in using total assets to generate profits.
+- Return on Equity (ROE) of 0.25 reflects the return generated for shareholders.
+- Net profit margin is 0.1, showing the proportion of revenue converted into net income.
+
+Capital Structure and Financial Risk:
+- Debt-to-equity ratio of 1.25 suggests the degree of financial leverage employed by the firm.
+- Debt-to-assets ratio equals 0.56, indicating the proportion of assets financed through liabilities.
+
+Operational Efficiency:
+- Asset turnover of 1.11 reflects how effectively assets are utilized to generate revenue.
+- Inventory turnover of 6.0 indicates the efficiency of inventory management.
+
+Valuation Indicators:
+- The weighted average cost of capital (WACC) is estimated at 0.07, representing the firm's average financing cost.
+- The discounted cash flow (DCF) valuation yields an estimated firm value of 76595.74.
+
+Market-Based Indicators:
+- Dividend yield stands at 0.03, representing cash return to shareholders.
+
+Financial Distress Assessment:
+- The Altman Z-score is 3.0, serving as an early warning indicator of financial distress.
+- Logistic regression model predicts distress status as 0.
+- Neural network model predicts distress status as 0.
+
+------------------------------------------------------------
+Company: B
+------------------------------------------------------------
+Liquidity Position:
+- The current ratio is 2.14, indicating the firm's ability to meet short-term obligations.
+- The quick ratio of 1.71 reflects liquidity excluding inventories.
+- The cash ratio stands at 0.57, representing the most conservative liquidity measure.
+
+Profitability Analysis:
+- Return on Assets (ROA) equals 0.11, indicating efficiency in using total assets to generate profits.
+- Return on Equity (ROE) of 0.25 reflects the return generated for shareholders.
+- Net profit margin is 0.1, showing the proportion of revenue converted into net income.
+
+Capital Structure and Financial Risk:
+- Debt-to-equity ratio of 1.2 suggests the degree of financial leverage employed by the firm.
+- Debt-to-assets ratio equals 0.55, indicating the proportion of assets financed through liabilities.
+
+Operational Efficiency:
+- Asset turnover of 1.18 reflects how effectively assets are utilized to generate revenue.
+- Inventory turnover of 5.0 indicates the efficiency of inventory management.
+
+Valuation Indicators:
+- The weighted average cost of capital (WACC) is estimated at 0.07, representing the firm's average financing cost.
+- The discounted cash flow (DCF) valuation yields an estimated firm value of 104761.9.
+
+Market-Based Indicators:
+- Dividend yield stands at 0.03, representing cash return to shareholders.
+
+Financial Distress Assessment:
+- The Altman Z-score is 2.2, serving as an early warning indicator of financial distress.
+- Logistic regression model predicts distress status as 0.
+- Neural network model predicts distress status as 0.
+
+------------------------------------------------------------
+Company: C
+------------------------------------------------------------
+Liquidity Position:
+- The current ratio is 2.0, indicating the firm's ability to meet short-term obligations.
+- The quick ratio of 1.58 reflects liquidity excluding inventories.
+- The cash ratio stands at 0.58, representing the most conservative liquidity measure.
+
+Profitability Analysis:
+- Return on Assets (ROA) equals 0.12, indicating efficiency in using total assets to generate profits.
+- Return on Equity (ROE) of 0.26 reflects the return generated for shareholders.
+- Net profit margin is 0.1, showing the proportion of revenue converted into net income.
+
+Capital Structure and Financial Risk:
+- Debt-to-equity ratio of 1.22 suggests the degree of financial leverage employed by the firm.
+- Debt-to-assets ratio equals 0.55, indicating the proportion of assets financed through liabilities.
+
+Operational Efficiency:
+- Asset turnover of 1.2 reflects how effectively assets are utilized to generate revenue.
+- Inventory turnover of 5.6 indicates the efficiency of inventory management.
+
+Valuation Indicators:
+- The weighted average cost of capital (WACC) is estimated at 0.07, representing the firm's average financing cost.
+- The discounted cash flow (DCF) valuation yields an estimated firm value of 90754.4.
+
+Market-Based Indicators:
+- Dividend yield stands at 0.03, representing cash return to shareholders.
+
+Financial Distress Assessment:
+- The Altman Z-score is 2.8, serving as an early warning indicator of financial distress.
+- Logistic regression model predicts distress status as 0.
+- Neural network model predicts distress status as 0.
