@@ -8,6 +8,8 @@ import seaborn as sns
 from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
+from data_quality import data_quality_checks
+
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
@@ -70,6 +72,29 @@ def load_data(file_path):
         })
         print("Sample data created.")
     return df
+
+def main():
+    df = load_data(input_file)
+
+    # Phase 0: Data Quality Control
+    df = data_quality_checks(df)
+
+    # Phase 1: Financial Ratios
+    df = calculate_all_financial_ratios(df)
+
+    # Phase 6: Market Ratios
+    df = add_market_ratios(df)
+
+    # Phase 2: Valuation
+    df = capm_expected_return(df)
+    df = calculate_wacc(df)
+    df = dcf_valuation(df)
+
+    # Phase 3: Asset Pricing & Distress
+    df = fama_french_regression(df)
+    df = ml_financial_distress(df)
+
+    save_results_with_charts(df)
 
 # -------------------
 # CAPM
