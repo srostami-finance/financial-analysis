@@ -37,7 +37,7 @@ To ensure data quality robustness and graceful handling of missing information
 To generate professional numerical, graphical, and textual outputs suitable for academic and applied use
 
 🧱 Project Structure
-financial-analysis/
+```financial-analysis/
 │
 ├── data/
 │   └── financial_data.xlsx        # User-provided input data
